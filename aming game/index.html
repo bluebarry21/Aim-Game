@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aiming Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif, Helvetica, Arial;
+        } 
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 20px;
+            margin: 0;
+        }
+
+        #info-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: larger;
+            width: 250px;
+            height: 80px;
+            text-align: center;
+            border-radius: 5px;
+            margin-top: 50px;
+            margin-bottom: 20px;
+        }
+
+        #score-box {
+            background-color: rgb(75, 156, 255);
+        }
+
+        #time-box {
+            background-color: aqua;
+        }
+
+        #hits-box {
+            background-color: yellow;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 2px solid #333;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        #target {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 50%;
+        }
+
+        #reset-button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #reset-button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div id="info-container">
+        <div id="score-box" class="info-box">Score: 0</div>
+        <div id="time-box" class="info-box">Time: 30s</div>
+        <div id="hits-box" class="info-box">Hits: 0</div>
+    </div>
+    <div id="game-container">
+        <div id="target"></div>
+    </div>
+    <button id="reset-button">Reset Time</button>
+    <script>
+        let score = 0;
+        let hits = 0;
+        let gameDuration = 30;
+        let timeRemaining = gameDuration;
+        let gameInterval;
+        const target = document.getElementById('target');
+        const gameContainer = document.getElementById('game-container');
+        const scoreBox = document.getElementById('score-box');
+        const timeBox = document.getElementById('time-box');
+        const hitsBox = document.getElementById('hits-box');
+        const resetButton = document.getElementById('reset-button');
+
+        function updateScore() {
+            scoreBox.innerText = `Score: ${score}`;
+        }
+
+        function updateHits() {
+            hitsBox.innerText = `Hits: ${hits}`;
+        }
+
+        function updateTime() {
+            timeBox.innerText = `Time: ${timeRemaining}s`;
+        }
+
+        function moveTarget() {
+            const x = Math.random() * (gameContainer.clientWidth - target.clientWidth);
+            const y = Math.random() * (gameContainer.clientHeight - target.clientHeight);
+            target.style.left = `${x}px`;
+            target.style.top = `${y}px`;
+        }
+
+        function startGame() {
+            moveTarget();
+            target.addEventListener('click', () => {
+                score += 10;
+                hits+= 1;
+                updateScore();
+                updateHits();
+                moveTarget();
+            });
+
+            gameInterval = setInterval(() => {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                    updateTime();
+                } else {
+                    clearInterval(gameInterval);
+                    alert(`Game over! Your score is ${score}`);
+                }
+            }, 1000);
+        }
+
+        function resetGame() {
+            clearInterval(gameInterval);
+            score = 0;
+            hits = 0;
+            timeRemaining = gameDuration;
+            updateScore();
+            updateHits();
+            updateTime();
+            startGame();
+        }
+
+        resetButton.addEventListener('click', resetGame);
+
+        window.onload = startGame;
+    </script>
+</body>
+</html>
